@@ -1,0 +1,623 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, user-scalable=no">
+<title>15주 린매스업 트래커</title>
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#2563EB">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="린매스업">
+<link rel="apple-touch-icon" href="icon-192.png">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Apple SD Gothic Neo',system-ui,sans-serif;background:#F1F5F9;color:#0F172A;max-width:430px;margin:0 auto;min-height:100vh}
+.header{padding:20px 16px 16px;color:white;position:relative;overflow:hidden;transition:background .4s}
+.header::before{content:'';position:absolute;top:-50px;right:-50px;width:180px;height:180px;background:rgba(255,255,255,.08);border-radius:50%}
+.nav-row{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;position:relative;z-index:2}
+.nav-btn{background:rgba(255,255,255,.2);border:none;color:white;width:36px;height:36px;border-radius:10px;cursor:pointer;font-size:20px;display:flex;align-items:center;justify-content:center}
+.nav-btn:hover{background:rgba(255,255,255,.32)}
+.date-center{text-align:center}
+.date-main{font-size:17px;font-weight:900}
+.date-sub{font-size:12px;opacity:.85;margin-top:2px;font-weight:600}
+.prog-labels{display:flex;justify-content:space-between;font-size:10px;opacity:.8;margin-bottom:4px;font-weight:700;position:relative;z-index:2}
+.prog-bg{height:7px;background:rgba(255,255,255,.25);border-radius:4px;overflow:hidden;position:relative;z-index:2}
+.prog-fill{height:100%;background:white;border-radius:4px;transition:width .5s}
+.stats-row{display:flex;justify-content:space-between;margin-top:10px;font-size:11px;opacity:.85;font-weight:600;position:relative;z-index:2}
+.tabs{display:flex;gap:4px;padding:10px 12px;background:#F1F5F9;position:sticky;top:0;z-index:10}
+.tab-btn{flex:1;padding:9px 0;border:none;border-radius:9px;font-size:12px;font-weight:700;cursor:pointer;background:white;color:#64748B;box-shadow:0 1px 3px rgba(0,0,0,.07);font-family:inherit;transition:all .2s}
+.tab-btn.active{color:white}
+.content{padding:0 16px 32px}
+.card{background:white;border-radius:16px;padding:16px;margin-bottom:12px;box-shadow:0 1px 4px rgba(0,0,0,.07)}
+.card-title{font-size:12px;font-weight:900;color:#64748B;letter-spacing:.5px;text-transform:uppercase;margin-bottom:12px;display:flex;align-items:center;gap:6px}
+.badge{margin-left:auto;font-size:10px;padding:2px 8px;border-radius:6px;font-weight:700;text-transform:none;letter-spacing:0}
+.day-hero{display:flex;align-items:center;gap:14px;padding:6px 0}
+.day-emoji{font-size:44px;line-height:1}
+.day-name{font-size:24px;font-weight:900;letter-spacing:-.5px}
+.day-focus{font-size:13px;color:#64748B;margin-top:2px;font-weight:600}
+.run-chip{display:inline-flex;align-items:center;gap:4px;margin-top:6px;padding:4px 10px;background:#FEF9C3;color:#854D0E;border-radius:8px;font-size:12px;font-weight:700}
+.deload-banner{background:linear-gradient(135deg,#7C3AED,#9333EA);color:white;border-radius:14px;padding:14px 16px;margin-bottom:12px}
+.deload-banner h3{font-size:14px;font-weight:900;margin-bottom:6px}
+.deload-banner p{font-size:12px;line-height:1.6;opacity:.95;font-weight:500}
+.ex-row{padding:10px 0;border-bottom:1px solid #F1F5F9}
+.ex-row:last-child{border-bottom:none}
+.ex-top{display:flex;justify-content:space-between;align-items:center}
+.ex-name{font-size:13.5px;font-weight:700;display:flex;align-items:center;gap:6px}
+.mtag{font-size:9px;font-weight:900;padding:2px 6px;border-radius:5px;color:white}
+.ex-det{font-size:12.5px;font-weight:700;font-family:monospace;text-align:right;max-width:48%}
+.ex-method{font-size:11px;color:#64748B;margin-top:4px;line-height:1.45;font-weight:500}
+.ex-log{display:flex;gap:5px;margin-top:8px;align-items:center}
+.ex-log input{width:100%;border:1.5px solid #E2E8F0;border-radius:8px;padding:6px 4px;font-size:12px;text-align:center;font-family:inherit;min-width:0}
+.ex-log input:focus{outline:none;border-color:#3B82F6}
+.ex-log .ck{font-size:16px;min-width:18px}
+.legend{display:flex;gap:6px;margin-bottom:10px;flex-wrap:wrap}
+.legend-item{font-size:10px;font-weight:700;padding:3px 8px;border-radius:6px;color:white}
+.tip{margin-top:10px;padding:9px 12px;background:#F8FAFC;border-radius:10px;font-size:11px;color:#64748B;font-weight:600;line-height:1.6}
+.run-card{background:#FFFBEB;border:1.5px solid #FDE68A;border-radius:16px;padding:14px 16px;margin-bottom:12px}
+.run-title{font-size:13px;font-weight:900;color:#92400E;margin-bottom:8px}
+.run-item{font-size:13px;color:#78350F;line-height:1.9;font-weight:500}
+.kcal-row{display:flex;justify-content:space-around;margin-bottom:12px;padding:10px;background:#F8FAFC;border-radius:10px}
+.kcal-val{font-size:16px;font-weight:900;text-align:center}
+.kcal-label{font-size:10px;color:#94A3B8;margin-top:1px;font-weight:600;text-align:center}
+.meal-row{display:flex;gap:10px;padding:8px 0;border-bottom:1px solid #F8FAFC}
+.meal-row:last-child{border-bottom:none}
+.meal-time{min-width:74px;font-size:10px;color:#94A3B8;font-weight:700;padding-top:2px;line-height:1.5}
+.meal-food{font-size:12.5px;line-height:1.45;font-weight:500}
+.meal-meta{font-size:10px;color:#94A3B8;margin-top:2px;font-weight:600}
+.supp{display:flex;gap:8px;align-items:flex-start;padding:7px 0;border-bottom:1px solid #F8FAFC;font-size:12px}
+.supp:last-child{border-bottom:none}
+.body-log{display:flex;gap:6px;margin-top:4px}
+.body-log>div{flex:1}
+.body-log label{font-size:10px;color:#94A3B8;font-weight:700;display:block;margin-bottom:3px}
+.body-log input{width:100%;border:1.5px solid #E2E8F0;border-radius:8px;padding:7px 4px;font-size:13px;text-align:center;font-family:inherit;min-width:0}
+.body-log input:focus{outline:none;border-color:#3B82F6}
+.save-btn{width:100%;margin-top:10px;padding:9px;border:none;border-radius:10px;background:#3B82F6;color:white;font-weight:700;font-size:12px;cursor:pointer;font-family:inherit}
+.save-btn:active{opacity:.8}
+.saved-msg{font-size:11px;color:#16A34A;font-weight:700;text-align:center;margin-top:6px;min-height:14px}
+.week-item{display:flex;align-items:center;gap:12px;background:white;border-radius:12px;padding:12px 14px;margin-bottom:8px;cursor:pointer;border:2px solid transparent;box-shadow:0 1px 3px rgba(0,0,0,.06);transition:all .2s}
+.week-emoji{font-size:22px}
+.week-name{font-size:14px;font-weight:700}
+.week-meta{font-size:11px;color:#64748B;margin-top:2px;font-weight:600}
+.week-now{font-size:10px;font-weight:800;padding:2px 8px;border-radius:6px;color:white;white-space:nowrap}
+.dl-tag{font-size:9px;font-weight:800;padding:2px 6px;border-radius:5px;background:#EDE9FE;color:#7C3AED}
+.ms-card{border-radius:14px;padding:16px;margin-bottom:10px;border:2px solid transparent;box-shadow:0 1px 3px rgba(0,0,0,.06)}
+.ms-header{font-size:11px;font-weight:800;margin-bottom:10px}
+.ms-stats{display:flex;justify-content:space-around}
+.ms-val{font-size:20px;font-weight:900;text-align:center}
+.ms-label{font-size:10px;color:#94A3B8;margin-top:2px;font-weight:600;text-align:center}
+.final-card{border-radius:16px;padding:18px;color:white;text-align:center;margin-top:4px}
+.final-val{font-size:24px;font-weight:900;text-align:center}
+.final-label{font-size:11px;opacity:.8;margin-top:2px;font-weight:600;text-align:center}
+.hidden{display:none!important}
+.note{margin-top:10px;padding:12px;background:white;border-radius:12px;font-size:11.5px;color:#475569;line-height:1.7;font-weight:500}
+.note b{color:#0F172A}
+.proto-step{display:flex;gap:10px;padding:9px 0;border-bottom:1px solid #F1F5F9}
+.proto-step:last-child{border-bottom:none}
+.proto-num{min-width:22px;height:22px;border-radius:50%;background:#3B82F6;color:white;font-size:11px;font-weight:900;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.proto-txt{font-size:12.5px;line-height:1.6;color:#334155;font-weight:500}
+.proto-txt b{color:#0F172A}
+.sec-title{font-size:15px;font-weight:900;margin-bottom:12px}
+.log-hist{font-size:11px;color:#475569;padding:6px 0;border-bottom:1px solid #F8FAFC;display:flex;justify-content:space-between;font-weight:500}
+</style>
+</head>
+<body>
+<div class="header" id="hdr">
+  <div class="nav-row">
+    <button class="nav-btn" onclick="mv(-1)">‹</button>
+    <div class="date-center"><div class="date-main" id="dMain"></div><div class="date-sub" id="dSub"></div></div>
+    <button class="nav-btn" onclick="mv(1)">›</button>
+  </div>
+  <div class="prog-labels" id="pLbl"></div>
+  <div class="prog-bg"><div class="prog-fill" id="pFill" style="width:0%"></div></div>
+  <div class="stats-row"><span>현재: 74kg · 17% · 35kg</span><span>목표: 72.5kg · 14% · 37kg</span></div>
+</div>
+
+<div class="tabs">
+  <button class="tab-btn active" id="t-today" onclick="sw('today')">오늘</button>
+  <button class="tab-btn" id="t-week" onclick="sw('week')">주간</button>
+  <button class="tab-btn" id="t-ms" onclick="sw('ms')">목표</button>
+  <button class="tab-btn" id="t-guide" onclick="sw('guide')">가이드</button>
+</div>
+
+<div class="content">
+  <div id="p-today">
+    <div class="card" id="heroCard">
+      <div class="day-hero">
+        <div class="day-emoji" id="dEmoji"></div>
+        <div>
+          <div class="day-name" id="dName"></div>
+          <div class="day-focus" id="dFocus"></div>
+          <div id="runChipWrap" class="hidden"><span class="run-chip">🏃 <span id="runChipTxt"></span></span></div>
+        </div>
+      </div>
+    </div>
+    <div class="deload-banner hidden" id="deloadBanner">
+      <h3>🔄 디로드 주차</h3>
+      <p>세트 절반 · RIR 3~4 · 중량 평소의 90%. 빈도(운동일)는 그대로 유지. 완전 휴식 금지 — 근력 손실 방지. 피로 리셋 후 다음 블록 대비.</p>
+    </div>
+    <div class="card hidden" id="wCard">
+      <div class="card-title">💪 오늘의 운동 <span class="badge" id="phBadge"></span></div>
+      <div class="legend">
+        <span class="legend-item" style="background:#DC2626">M 메인</span>
+        <span class="legend-item" style="background:#2563EB">C 보조</span>
+        <span class="legend-item" style="background:#059669">I 고립</span>
+      </div>
+      <div id="exList"></div>
+      <div class="tip" id="wTip"></div>
+    </div>
+    <div class="run-card hidden" id="runCard">
+      <div class="run-title">🏃 런닝 플랜</div>
+      <div class="run-item" id="runDet"></div>
+    </div>
+    <div class="card">
+      <div class="card-title">⚖️ 오늘 신체 기록</div>
+      <div class="body-log">
+        <div><label>체중 kg</label><input type="number" step="0.1" id="bWeight" placeholder="74"></div>
+        <div><label>체지방 %</label><input type="number" step="0.1" id="bBf" placeholder="17"></div>
+        <div><label>근육량 kg</label><input type="number" step="0.1" id="bMuscle" placeholder="35"></div>
+      </div>
+      <button class="save-btn" onclick="saveBody()">신체 기록 저장</button>
+      <div class="saved-msg" id="bodySaved"></div>
+    </div>
+    <div class="card">
+      <div class="card-title">🍽️ 오늘의 식단</div>
+      <div class="kcal-row">
+        <div><div class="kcal-val" id="mKcal" style="color:#EF4444"></div><div class="kcal-label">칼로리</div></div>
+        <div><div class="kcal-val" id="mPro" style="color:#3B82F6"></div><div class="kcal-label">단백질</div></div>
+        <div><div class="kcal-val" id="mCarb" style="color:#22C55E"></div><div class="kcal-label">탄수화물</div></div>
+      </div>
+      <div id="mealList"></div>
+    </div>
+    <div class="card">
+      <div class="card-title">💊 보조제 (근거 기반)</div>
+      <div class="supp"><b style="color:#7C3AED">크레아틴</b><span>모노하이드레이트 5g/일 (매일 동일 시간)</span></div>
+      <div class="supp"><b style="color:#3B82F6">단백질</b><span>식단 부족분 보충 — 총량이 핵심</span></div>
+      <div class="supp"><b style="color:#64748B">선택</b><span>오메가3 1~2g, 비타민D</span></div>
+    </div>
+  </div>
+
+  <div id="p-week" class="hidden">
+    <div id="weekTitle" class="sec-title"></div>
+    <div id="weekList"></div>
+    <div class="card" style="margin-top:4px">
+      <div class="card-title">📊 이번 주 볼륨 집계 <span class="badge" id="volMode" style="background:#F1F5F9;color:#64748B"></span></div>
+      <div id="volList"></div>
+      <div class="tip" id="volTip"></div>
+    </div>
+  </div>
+
+  <div id="p-ms" class="hidden">
+    <div class="sec-title" style="margin-bottom:6px">체성분 목표 + 기록</div>
+    <div style="font-size:11.5px;color:#64748B;margin-bottom:12px;font-weight:500;line-height:1.6">McDonald·Aragon 모델 기준 적자 중급자 현실 속도. 근육량 15주 +2kg 상한.</div>
+    <div class="ms-card" style="background:white">
+      <div class="ms-header" style="color:#64748B">📍 시작 (5월 25일)</div>
+      <div class="ms-stats">
+        <div><div class="ms-val">74kg</div><div class="ms-label">체중</div></div>
+        <div><div class="ms-val" style="color:#EF4444">17%</div><div class="ms-label">체지방률</div></div>
+        <div><div class="ms-val" style="color:#3B82F6">35kg</div><div class="ms-label">근육량</div></div>
+      </div>
+    </div>
+    <div id="msList"></div>
+    <div class="final-card" style="background:linear-gradient(135deg,#7C3AED,#2563EB)">
+      <div style="font-size:12px;opacity:.9;margin-bottom:12px;font-weight:700">🏆 15주 최종 목표 · 9월 7일</div>
+      <div style="display:flex;justify-content:space-around">
+        <div><div class="final-val">72.5kg</div><div class="final-label">체중</div></div>
+        <div><div class="final-val">14%</div><div class="final-label">체지방률</div></div>
+        <div><div class="final-val">37kg</div><div class="final-label">근육량</div></div>
+      </div>
+    </div>
+    <div class="card" style="margin-top:12px">
+      <div class="card-title">📈 내 신체 기록</div>
+      <div id="bodyHist" style="font-size:12px;color:#94A3B8">아직 기록 없음 — 오늘 탭에서 입력하세요</div>
+    </div>
+    <div class="card">
+      <div class="card-title">📤 데이터 내보내기 (CSV)</div>
+      <div style="font-size:12px;color:#475569;line-height:1.6;font-weight:500;margin-bottom:10px">
+        모든 운동일지·신체 기록을 CSV 파일로 저장. 엑셀·구글시트에서 그래프 분석 가능.
+      </div>
+      <button class="save-btn" style="background:#059669" onclick="exportWorkoutCSV()">운동일지 CSV 받기</button>
+      <button class="save-btn" style="background:#3B82F6;margin-top:8px" onclick="exportBodyCSV()">신체기록 CSV 받기</button>
+      <div class="saved-msg" id="csvMsg"></div>
+    </div>
+    <div class="note">
+      📅 <b>인바디:</b> 4·8·12·15주차 종료 시점, 기상 직후 동일 조건<br>
+      ⚠️ <b>근육량 38kg은 6개월 목표</b>로 이월 (15주 +3kg은 생리학적 불가)<br>
+      📊 InBody 근육량 ±1~2kg 변동 → 단일값 아닌 추세로 판단
+    </div>
+  </div>
+
+  <div id="p-guide" class="hidden">
+    <div class="sec-title">운동 방법론 + 프로토콜</div>
+
+    <div class="card">
+      <div class="card-title">🎯 실패 지점 (RIR)</div>
+      <div style="font-size:12.5px;color:#475569;line-height:1.7;font-weight:500">
+        <b>1~3 RIR이면 충분, 매 세트 실패는 비권장.</b> 적자 상태에선 회복 부담 커서 실패 회피가 유리.<br>
+        <span style="color:#94A3B8">Robinson et al., Sports Med 2024;54(9):2209</span>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-title">💥 드랍 vs 일반세트</div>
+      <div style="font-size:12.5px;color:#475569;line-height:1.7;font-weight:500">
+        <b>비대 효과 동일, 드랍은 시간 절약용</b> (p=0.392, 절반~⅓ 시간). 고립(I) 마지막 세트만 적용, 컴파운드 비권장.<br>
+        <span style="color:#94A3B8">Sødal et al., Sports Med Open 2023;9:62</span>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-title">🏋️ 탑세트 + 백오프</div>
+      <div style="font-size:12.5px;color:#475569;line-height:1.7;font-weight:500">
+        무거운 탑세트(근력) + 가벼운 백오프(볼륨). 메인 컴파운드(M)에 적용.<br>예) 벤치 72.5×6 → 65×8×2
+      </div>
+    </div>
+
+    <div class="card" style="border:2px solid #EDE9FE">
+      <div class="card-title" style="color:#7C3AED">🔄 디로드 상세 설계</div>
+      <div style="font-size:12.5px;color:#475569;line-height:1.7;font-weight:500;margin-bottom:10px">
+        <b>내장 디로드: 8주차 · 13주차</b> (약 5~6주 주기, 연구 표준 5.6주와 일치).
+      </div>
+      <div class="proto-step"><div class="proto-num" style="background:#7C3AED">1</div><div class="proto-txt"><b>볼륨 ↓:</b> 세트 수 절반 (백오프·드랍 생략), 횟수도 약간 감소</div></div>
+      <div class="proto-step"><div class="proto-num" style="background:#7C3AED">2</div><div class="proto-txt"><b>강도 ↓:</b> 중량 평소의 90%, RIR 3~4 (여유롭게)</div></div>
+      <div class="proto-step"><div class="proto-num" style="background:#7C3AED">3</div><div class="proto-txt"><b>빈도 유지:</b> 운동일은 그대로 — 완전 휴식 ✕ (근력 손실 방지)</div></div>
+      <div class="proto-step"><div class="proto-num" style="background:#7C3AED">4</div><div class="proto-txt"><b>런닝 유지:</b> LISS만, 인터벌은 생략</div></div>
+      <div class="note" style="margin-top:10px;background:#F8FAFC">
+        <b>자가조절 디로드:</b> 예정일 전이라도 ① 주요 운동 중량 2세션 연속 하락 ② 관절통·과도한 근육통 지속 ③ 수면·의욕 저하 시 즉시 시행.<br>
+        <span style="color:#94A3B8">Bell et al., Sports Med Open 2024;10:34 / 완전 중단은 근력 ↓ — PeerJ 2024;12:e16777</span>
+      </div>
+    </div>
+
+    <div class="card" style="border:2px solid #FEE2E2">
+      <div class="card-title" style="color:#DC2626">📉 정체기 대응 프로토콜</div>
+      <div style="font-size:12px;color:#475569;line-height:1.6;font-weight:600;margin-bottom:10px">
+        <b>정체 정의:</b> ① 같은 운동 중량·횟수 3세션 연속 정체 또는 ② 체중·체지방 3주 연속 무변화
+      </div>
+      <div style="font-size:12px;font-weight:800;color:#DC2626;margin:8px 0 4px">A. 근력 정체 (무게가 안 늘 때)</div>
+      <div class="proto-step"><div class="proto-num" style="background:#DC2626">1</div><div class="proto-txt"><b>더블 프로그레션:</b> 무게 고정 후 목표 횟수 채울 때까지 반복 → 채우면 +2.5kg</div></div>
+      <div class="proto-step"><div class="proto-num" style="background:#DC2626">2</div><div class="proto-txt"><b>디로드 후 재도전:</b> 1주 디로드 → 정체 중량의 95%부터 재상승</div></div>
+      <div class="proto-step"><div class="proto-num" style="background:#DC2626">3</div><div class="proto-txt"><b>볼륨 +1세트:</b> 해당 부위 주간 세트 1~2개 추가 (상한 20세트 내)</div></div>
+      <div class="proto-step"><div class="proto-num" style="background:#DC2626">4</div><div class="proto-txt"><b>변형 교체:</b> 정체 종목을 유사 변형으로 4주 교체 (예 바벨벤치→덤벨벤치)</div></div>
+      <div style="font-size:12px;font-weight:800;color:#D97706;margin:12px 0 4px">B. 체성분 정체 (체중·체지방 무변화)</div>
+      <div class="proto-step"><div class="proto-num" style="background:#D97706">1</div><div class="proto-txt"><b>TDEE 재계산:</b> 체중 감소 시 유지칼로리도 하락 → 칼로리 -100~150 조정</div></div>
+      <div class="proto-step"><div class="proto-num" style="background:#D97706">2</div><div class="proto-txt"><b>NEAT ↑:</b> 칼로리 더 줄이기 전에 일일 걸음 +2000보 우선</div></div>
+      <div class="proto-step"><div class="proto-num" style="background:#D97706">3</div><div class="proto-txt"><b>점검:</b> 단백질 160g+ 달성? 수면 7시간+? 측정 오차(수분) 아닌지?</div></div>
+      <div class="proto-step"><div class="proto-num" style="background:#D97706">4</div><div class="proto-txt"><b>금지:</b> 칼로리 급감 ✕ — 근손실·대사적응 유발. 주당 체중 0.3kg 이하 감량 유지</div></div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">📈 주간 볼륨 기준</div>
+      <div style="font-size:12px;color:#475569;line-height:1.8;font-weight:500">
+        부위별 <b>주 12~18세트</b> (주 2회 분할). 비대 최적 구간(10~20). 적자 상태이므로 상한 회피 — 회복 우선.
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+const S=new Date(2026,4,25),E=new Date(2026,8,7);
+const PH=[
+  {n:"Phase 1",s:"기초",c:"#2563EB",l:"#DBEAFE",k:2400,cb:"250g"},
+  {n:"Phase 2",s:"빌드업",c:"#059669",l:"#D1FAE5",k:2450,cb:"265g"},
+  {n:"Phase 3",s:"피크",c:"#D97706",l:"#FEF3C7",k:2500,cb:"280g"},
+  {n:"Phase 4",s:"마무리",c:"#7C3AED",l:"#EDE9FE",k:2500,cb:"270g"},
+];
+const MS=[
+  {w:4,wt:"73.5",f:"16",m:"35.5",p:0},
+  {w:8,wt:"73",f:"15.5",m:"36",p:1},
+  {w:12,wt:"72.5",f:"14.5",m:"36.5",p:2},
+  {w:15,wt:"72.5",f:"14",m:"37",p:3},
+];
+const DR=[
+  ["Push A","💪","가슴 중심",1,null],
+  ["Pull A","🏋️","등 중심",1,"LISS 40분"],
+  ["Legs","🦵","하체 전체",1,null],
+  ["Push B","💪","어깨 중심",1,"인터벌 30분"],
+  ["Pull B","🏋️","이두·후면",1,"LISS 40분"],
+  ["휴식","🏃","",0,"LISS 30분 (선택)"],
+  ["완전 휴식","😴","",0,null],
+];
+const WK={
+"Push A":[
+  ["벤치프레스","M","탑세트1(RIR2)+백오프2(RIR3)","탑6@72.5+백8@65×2","탑6@75+백8@67.5×2","탑5@77.5+백6@70×3","탑8@65+백10@57.5×2"],
+  ["인클라인 덤벨프레스","C","스트레이트 RIR1~2","3×10 · 22kg","4×10 · 24kg","4×8 · 26kg","3×10 · 20kg"],
+  ["케이블 플라이","I","스트레이트, 마지막 드랍 옵션","3×12 RIR1","3×12 RIR1","4×12 RIR0~1","3×12 RIR1"],
+  ["오버헤드프레스","M","탑세트1(RIR2)+백오프2(RIR3)","탑6@45+백8@40×2","탑6@47.5+백8@42.5×2","탑5@50+백6@45×2","탑8@40+백10@35×2"],
+  ["사이드 레터럴레이즈","I","스트레이트 RIR0~1, 드랍 권장","3×15 · 10kg","4×15 · 12kg","4×15 · 14kg","3×15 · 10kg"],
+],
+"Pull A":[
+  ["데드리프트","M","탑세트1(RIR3~4), 백오프 X","4×5 · 100kg","4×5 · 105kg","4×5 · 110kg","3×5 · 90kg"],
+  ["랫풀다운","C","스트레이트 RIR1~2","3×10 · 70kg","4×10 · 75kg","4×10 · 80kg","3×10 · 65kg"],
+  ["바벨로우","C","스트레이트 RIR1~2","3×8 · 70kg","4×8 · 72.5kg","4×8 · 75kg","3×8 · 65kg"],
+  ["페이스풀","I","스트레이트 RIR0~1","3×15","3×15","4×15","3×15"],
+  ["바벨컬","I","스트레이트, 마지막 드랍 옵션","3×10 · 40kg","3×10 · 42.5kg","4×10 · 45kg","3×10 · 37.5kg"],
+],
+"Legs":[
+  ["스쿼트","M","탑세트1(RIR2)+백오프2(RIR3)","탑6@85+백10@70×2","탑6@90+백10@75×2","탑5@95+백8@80×2","탑8@75+백10@62.5×2"],
+  ["루마니안 데드리프트","C","스트레이트 RIR2","3×10 · 70kg","3×10 · 75kg","4×10 · 80kg","3×10 · 65kg"],
+  ["레그프레스","C","스트레이트 RIR1~2","3×12","4×12","4×10","3×12"],
+  ["레그컬","I","스트레이트, 마지막 드랍 옵션","3×12 RIR0~1","4×12 RIR0~1","4×12 RIR0~1","3×12"],
+  ["카프레이즈","I","스트레이트 RIR0~1","4×15","4×15","4×20","3×15"],
+],
+"Push B":[
+  ["오버헤드프레스","M","탑세트1(RIR2)+백오프2(RIR3)","탑6@45+백8@40×2","탑6@47.5+백8@42.5×2","탑5@50+백6@45×2","탑8@40+백10@35×2"],
+  ["덤벨 숄더프레스","C","스트레이트 RIR1~2","3×10 · 20kg","3×10 · 22kg","4×10 · 24kg","3×10 · 18kg"],
+  ["인클라인 벤치프레스","C","스트레이트 RIR1~2","3×10 · 65kg","4×10 · 67.5kg","4×8 · 70kg","3×10 · 60kg"],
+  ["사이드 레터럴레이즈","I","스트레이트 RIR0~1, 드랍 권장","4×15 · 12kg","4×15 · 12kg","4×15 · 14kg","3×15 · 10kg"],
+  ["트라이셉스 푸시다운","I","스트레이트, 마지막 드랍 옵션","3×12 RIR0~1","4×12 RIR0~1","4×12 RIR0~1","3×12"],
+],
+"Pull B":[
+  ["바벨로우","M","탑세트1(RIR2)+백오프2(RIR3)","탑8@70+백10@60×2","탑8@72.5+백10@62.5×2","탑6@75+백8@65×2","탑8@65+백10@55×2"],
+  ["시티드 케이블로우","C","스트레이트 RIR1~2","3×12","4×12","4×10","3×12"],
+  ["원암 덤벨로우","C","스트레이트 RIR1~2","3×10 · 30kg","3×10 · 32kg","4×10 · 34kg","3×10 · 28kg"],
+  ["해머컬","I","스트레이트, 마지막 드랍 옵션","3×12 · 16kg","3×12 · 18kg","4×12 · 20kg","3×12 · 16kg"],
+  ["리어델트 플라이","I","스트레이트 RIR0~1","3×15","4×15","4×15","3×15"],
+],
+};
+const TAGC={"M":"#DC2626","C":"#2563EB","I":"#059669"};
+const MW=[
+  ["아침 7-8시","계란 3개 + 오트밀 100g + 우유 200ml",550,38],
+  ["점심 12-13시","닭가슴살 200g + 현미밥 200g + 채소",650,48],
+  ["운동 전 1시간","바나나 1개 + 고구마 100g",230,4],
+  ["운동 후","프로틴 쉐이크 1스쿱 + 우유 200ml",270,35],
+  ["저녁 18-19시","소고기/연어 180g + 고구마 150g + 채소",580,40],
+  ["취침 전","그릭요거트 200g + 카제인 옵션",220,22],
+];
+const MR=[
+  ["아침 7-8시","계란 4개 + 오트밀 80g",520,40],
+  ["점심 12-13시","닭가슴살 200g + 현미밥 150g + 채소",580,48],
+  ["간식 15시","견과류 30g + 그릭요거트 150g",280,16],
+  ["저녁 18-19시","연어 180g + 샐러드 + 아보카도 반개",560,40],
+  ["취침 전","카제인 프로틴 1스쿱",130,28],
+];
+const DK=["일","월","화","수","목","금","토"];
+const DELOAD_WEEKS=[8,13];
+let cur=new Date(2026,4,25),tab="today";
+
+// ---- storage (localStorage + in-memory fallback) ----
+const mem={};
+function lsGet(k){try{const v=localStorage.getItem(k);return v?JSON.parse(v):(mem[k]||null);}catch(e){return mem[k]||null;}}
+function lsSet(k,v){try{localStorage.setItem(k,JSON.stringify(v));}catch(e){mem[k]=v;}}
+
+function dn(d){return Math.floor((d-S)/86400000)+1}
+function wn(d){return Math.ceil(d/7)}
+function pi(w){return w<=4?0:w<=8?1:w<=12?2:3}
+function isDeload(w){return DELOAD_WEEKS.includes(w)}
+
+function render(){
+  const d=dn(cur),w=wn(d),p=pi(w),ph=PH[p],pct=Math.min(Math.round(d/105*100),100);
+  const dti=(d-1)%7,dt=DR[dti],dl=isDeload(w);
+  document.getElementById("hdr").style.background=`linear-gradient(135deg,${ph.c},${ph.c}BB)`;
+  document.getElementById("dMain").textContent=`${cur.getMonth()+1}월 ${cur.getDate()}일 (${DK[cur.getDay()]})`;
+  document.getElementById("dSub").textContent=`Day ${d} · ${w}주차 · ${ph.n} ${ph.s}${dl?' · 🔄디로드':''}`;
+  document.getElementById("pLbl").innerHTML=`<span>5/25 시작</span><span style="font-size:11px">${pct}% 완료</span><span>9/7 목표</span>`;
+  document.getElementById("pFill").style.width=pct+"%";
+  document.querySelectorAll(".tab-btn.active").forEach(b=>b.style.background=ph.c);
+  if(tab==="today") renderToday(dt,ph,p,d,w,dl);
+  if(tab==="week") {renderWeek(d,w,p,ph);renderVolume(w,ph);}
+  if(tab==="ms") {renderMs(w,ph);renderBodyHist();}
+}
+
+function renderToday(dt,ph,p,d,w,dl){
+  document.getElementById("dEmoji").textContent=dt[1];
+  document.getElementById("dName").textContent=dt[0];
+  document.getElementById("dFocus").textContent=dt[2];
+  document.getElementById("deloadBanner").classList.toggle("hidden",!dl);
+  const rcw=document.getElementById("runChipWrap");
+  if(dt[4]){rcw.classList.remove("hidden");document.getElementById("runChipTxt").textContent=dl&&dt[4].includes("인터벌")?"LISS 30분 (디로드)":dt[4];}
+  else rcw.classList.add("hidden");
+
+  const wc=document.getElementById("wCard");
+  if(dt[3]&&WK[dt[0]]){
+    wc.classList.remove("hidden");
+    const b=document.getElementById("phBadge");
+    b.textContent=dl?"디로드":ph.s+" 기준";b.style.background=ph.l;b.style.color=ph.c;
+    document.getElementById("exList").innerHTML=WK[dt[0]].map((e,idx)=>{
+      const type=e[1],method=e[2];
+      let val=e[p+3],meth=method;
+      if(dl){val=(type==="I")?"2세트 · 드랍 생략":"2세트 · 90% 중량";meth="디로드: RIR 3~4, 여유롭게";}
+      const key=`log_${d}_${idx}`,saved=lsGet(key)||{};
+      const done=saved.w||saved.r;
+      return `<div class="ex-row">
+        <div class="ex-top">
+          <span class="ex-name"><span class="mtag" style="background:${TAGC[type]}">${type}</span>${e[0]}</span>
+          <span class="ex-det" style="color:${ph.c}">${val}</span>
+        </div>
+        <div class="ex-method">↳ ${meth}</div>
+        <div class="ex-log">
+          <input type="number" placeholder="kg" value="${saved.w||''}" onchange="saveLog(${d},${idx},'w',this.value)">
+          <input type="number" placeholder="회" value="${saved.r||''}" onchange="saveLog(${d},${idx},'r',this.value)">
+          <input type="number" placeholder="RIR" value="${saved.rir||''}" onchange="saveLog(${d},${idx},'rir',this.value)">
+          <span class="ck" id="ck_${idx}">${done?'✅':'⬜'}</span>
+        </div>
+      </div>`;
+    }).join("");
+    document.getElementById("wTip").innerHTML=dl
+      ?"🔄 <b>디로드 주차:</b> 무리하지 말 것. 기록은 참고용으로만."
+      :"📌 <b>과부하:</b> 메인(M) 탑세트 목표 횟수 달성 → 다음 세션 +2.5kg<br>📌 입력칸에 실제 수행 kg·횟수·RIR 기록 → 자동 저장";
+  } else wc.classList.add("hidden");
+
+  const rc=document.getElementById("runCard");
+  if(dt[4]){
+    rc.classList.remove("hidden");
+    const r=dt[4];let det="";
+    if(r.includes("인터벌")&&!dl)det="• 1분 전력질주(7~8km/h) + 2분 걷기 × 8세트<br>• 총 소요: 약 30분<br>• 근력 운동 직후 진행";
+    else if(r.includes("선택"))det="• 컨디션 양호 시에만 진행<br>• 5.5~6km/h · 30분<br>• 완전 휴식도 OK";
+    else det="• 속도: 5.5~6km/h (최대 심박 60~70%)<br>• 40분<br>• 근력 운동 직후 진행 권장";
+    if(dl)det+="<br>• <b>디로드:</b> 인터벌→LISS로 대체";
+    document.getElementById("runDet").innerHTML=det;
+  } else rc.classList.add("hidden");
+
+  const isW=!!dt[3];const meals=isW?MW:MR;const kcal=isW?ph.k:ph.k-200;
+  document.getElementById("mKcal").textContent=kcal+"kcal";
+  document.getElementById("mPro").textContent="160g+";
+  document.getElementById("mCarb").textContent=isW?ph.cb:"220g";
+  document.getElementById("mealList").innerHTML=meals.map(m=>`
+    <div class="meal-row"><div class="meal-time">${m[0]}</div>
+    <div><div class="meal-food">${m[1]}</div><div class="meal-meta">${m[2]}kcal · P ${m[3]}g</div></div></div>`).join("");
+
+  // body log prefill
+  const bkey=`body_${d}`,bsaved=lsGet(bkey)||{};
+  document.getElementById("bWeight").value=bsaved.weight||'';
+  document.getElementById("bBf").value=bsaved.bf||'';
+  document.getElementById("bMuscle").value=bsaved.muscle||'';
+  document.getElementById("bodySaved").textContent='';
+}
+
+function saveLog(d,idx,field,val){
+  const key=`log_${d}_${idx}`,saved=lsGet(key)||{};
+  saved[field]=val;lsSet(key,saved);
+  const ck=document.getElementById("ck_"+idx);
+  if(ck)ck.textContent=(saved.w||saved.r)?'✅':'⬜';
+}
+
+function saveBody(){
+  const d=dn(cur);
+  const data={weight:document.getElementById("bWeight").value,bf:document.getElementById("bBf").value,muscle:document.getElementById("bMuscle").value,date:`${cur.getMonth()+1}/${cur.getDate()}`};
+  lsSet(`body_${d}`,data);
+  document.getElementById("bodySaved").textContent="✓ 저장됨";
+  setTimeout(()=>{document.getElementById("bodySaved").textContent="";},2000);
+}
+
+function renderBodyHist(){
+  let rows=[];
+  for(let i=1;i<=105;i++){
+    const b=lsGet(`body_${i}`);
+    if(b&&(b.weight||b.bf||b.muscle))rows.push({d:i,...b});
+  }
+  const el=document.getElementById("bodyHist");
+  if(rows.length===0){el.innerHTML='아직 기록 없음 — 오늘 탭에서 입력하세요';return;}
+  el.innerHTML=`<div class="log-hist" style="font-weight:800;color:#0F172A"><span>날짜</span><span>체중 / 체지방 / 근육</span></div>`+
+    rows.map(r=>`<div class="log-hist"><span>Day ${r.d} (${r.date||''})</span><span>${r.weight||'-'}kg / ${r.bf||'-'}% / ${r.muscle||'-'}kg</span></div>`).join("");
+}
+
+function renderWeek(d,w,p,ph){
+  document.getElementById("weekTitle").textContent=`${w}주차 (${ph.n} ${ph.s})${isDeload(w)?' · 🔄디로드':''}`;
+  const ws=(w-1)*7+1;let html="";
+  for(let i=0;i<7;i++){
+    const wd=ws+i;if(wd<1||wd>105)continue;
+    const dd=new Date(S);dd.setDate(S.getDate()+wd-1);
+    const dt=DR[(wd-1)%7],ic=wd===d,dl=isDeload(wn(wd));
+    html+=`<div class="week-item" onclick="goD(${wd})" style="${ic?`border-color:${ph.c};background:${ph.l}`:''}">
+      <div class="week-emoji">${dt[1]}</div>
+      <div style="flex:1"><div class="week-name" style="${ic?`color:${ph.c}`:''}">${dt[0]} ${dl&&dt[3]?'<span class="dl-tag">디로드</span>':''}</div>
+      <div class="week-meta">${dd.getMonth()+1}/${dd.getDate()} ${DK[dd.getDay()]}요일${dt[4]?` <span style="color:#D97706">🏃 ${dt[4]}</span>`:""}</div></div>
+      ${ic?`<span class="week-now" style="background:${ph.c}">현재</span>`:""}${!dt[3]?'<span style="font-size:18px">💤</span>':""}</div>`;
+  }
+  document.getElementById("weekList").innerHTML=html;
+}
+
+function renderMs(w,ph){
+  const nxt=MS.findIndex(m=>m.w>=w);
+  document.getElementById("msList").innerHTML=MS.map((m,i)=>{
+    const p2=PH[m.p];const reached=w>m.w,curr=i===nxt&&!reached;
+    let emoji="⬜",txt="예정",sc=p2.c,bg="white",bc="transparent";
+    if(reached){emoji="✅";txt="달성";bg="#F0FDF4";sc="#16A34A";}
+    if(curr){emoji="🎯";txt="현재 목표";bg=p2.l;bc=p2.c;}
+    return `<div class="ms-card" style="background:${bg};border-color:${bc}">
+      <div class="ms-header" style="color:${sc}">${emoji} ${txt} · ${m.w}주차${isDeload(m.w)?' 🔄':''}</div>
+      <div class="ms-stats">
+        <div><div class="ms-val">${m.wt}kg</div><div class="ms-label">체중</div></div>
+        <div><div class="ms-val" style="color:#EF4444">${m.f}%</div><div class="ms-label">체지방률</div></div>
+        <div><div class="ms-val" style="color:#3B82F6">${m.m}kg</div><div class="ms-label">근육량</div></div>
+      </div></div>`;
+  }).join("");
+}
+
+const MUSCLE={
+"Push A":["가슴","가슴","가슴","어깨","어깨"],
+"Pull A":["등","등","등","어깨","이두"],
+"Legs":["하체","하체","하체","하체","하체"],
+"Push B":["어깨","어깨","가슴","어깨","삼두"],
+"Pull B":["등","등","등","이두","어깨"],
+};
+function plannedSets(type,val,dl){
+  if(dl) return 2;
+  if(val.includes("탑")){const m=val.match(/×(\d+)/);return 1+(m?parseInt(m[1]):2);}
+  const m=val.match(/(\d+)×/);return m?parseInt(m[1]):3;
+}
+function renderVolume(w,ph){
+  const dl=isDeload(w);
+  document.getElementById("volMode").textContent=dl?"디로드 주":"정상 주";
+  const groups={"가슴":0,"등":0,"어깨":0,"하체":0,"이두":0,"삼두":0};
+  const ws=(w-1)*7+1,p=pi(w);
+  for(let i=0;i<7;i++){
+    const wd=ws+i;if(wd<1||wd>105)continue;
+    const dt=DR[(wd-1)%7];
+    if(!dt[3]||!WK[dt[0]])continue;
+    WK[dt[0]].forEach((e,idx)=>{
+      const mg=MUSCLE[dt[0]][idx];
+      groups[mg]=(groups[mg]||0)+plannedSets(e[1],e[p+3],dl);
+    });
+  }
+  const order=["가슴","등","어깨","하체","이두","삼두"];
+  document.getElementById("volList").innerHTML=order.map(g=>{
+    const v=groups[g]||0;
+    const major=["가슴","등","어깨","하체"].includes(g);
+    const optimal=major?(v>=10&&v<=20):(v>=6&&v<=14);
+    const color=optimal?"#16A34A":(v<(major?10:6)?"#D97706":"#DC2626");
+    const status=optimal?"적정":(v<(major?10:6)?"부족":"과다");
+    const max=major?24:18;
+    return `<div style="margin-bottom:9px">
+      <div style="display:flex;justify-content:space-between;font-size:12px;font-weight:700;margin-bottom:3px">
+        <span>${g}</span><span style="color:${color}">${v}세트 · ${status}</span>
+      </div>
+      <div style="height:6px;background:#F1F5F9;border-radius:3px;overflow:hidden">
+        <div style="height:100%;width:${Math.min(v/max*100,100)}%;background:${color};border-radius:3px"></div>
+      </div></div>`;
+  }).join("");
+  document.getElementById("volTip").innerHTML=dl
+    ?"🔄 디로드 주 — 볼륨 의도적 감소. 정상 범위 미달은 정상."
+    :"🟢 대근육 적정 10~20세트 / 소근육 6~14세트(간접 포함). 적자 상태이므로 상한 회피.";
+}
+
+function dl_csv(filename,rows){
+  const csv=rows.map(r=>r.map(c=>`"${String(c).replace(/"/g,'""')}"`).join(",")).join("\n");
+  const blob=new Blob(["\uFEFF"+csv],{type:"text/csv;charset=utf-8;"});
+  const url=URL.createObjectURL(blob);
+  const a=document.createElement("a");a.href=url;a.download=filename;
+  document.body.appendChild(a);a.click();document.body.removeChild(a);URL.revokeObjectURL(url);
+}
+function exportWorkoutCSV(){
+  const rows=[["Day","주차","분할","운동","목표","실제kg","실제횟수","RIR"]];
+  for(let d=1;d<=105;d++){
+    const dt=DR[(d-1)%7];if(!dt[3]||!WK[dt[0]])continue;
+    const p=pi(wn(d)),dl=isDeload(wn(d));
+    WK[dt[0]].forEach((e,idx)=>{
+      const log=lsGet(`log_${d}_${idx}`)||{};
+      if(log.w||log.r||log.rir)rows.push([d,wn(d),dt[0],e[0],dl?"디로드":e[p+3],log.w||"",log.r||"",log.rir||""]);
+    });
+  }
+  const msg=document.getElementById("csvMsg");
+  if(rows.length===1){msg.textContent="기록된 운동일지가 없습니다";setTimeout(()=>msg.textContent="",2500);return;}
+  dl_csv("운동일지.csv",rows);msg.textContent="✓ 운동일지 다운로드";setTimeout(()=>msg.textContent="",2500);
+}
+function exportBodyCSV(){
+  const rows=[["Day","날짜","체중kg","체지방%","근육량kg"]];
+  for(let d=1;d<=105;d++){
+    const b=lsGet(`body_${d}`);
+    if(b&&(b.weight||b.bf||b.muscle))rows.push([d,b.date||"",b.weight||"",b.bf||"",b.muscle||""]);
+  }
+  const msg=document.getElementById("csvMsg");
+  if(rows.length===1){msg.textContent="기록된 신체 데이터가 없습니다";setTimeout(()=>msg.textContent="",2500);return;}
+  dl_csv("신체기록.csv",rows);msg.textContent="✓ 신체기록 다운로드";setTimeout(()=>msg.textContent="",2500);
+}
+
+function mv(delta){const d=new Date(cur);d.setDate(d.getDate()+delta);if(d>=S&&d<=E){cur=d;render();}}
+function goD(d){const dd=new Date(S);dd.setDate(S.getDate()+d-1);cur=dd;sw("today");}
+function sw(t){
+  tab=t;
+  ["today","week","ms","guide"].forEach(x=>{
+    document.getElementById("t-"+x).classList.toggle("active",x===t);
+    document.getElementById("p-"+x).classList.toggle("hidden",x!==t);
+  });
+  const d=dn(cur),p=pi(wn(d));
+  document.querySelectorAll(".tab-btn.active").forEach(b=>b.style.background=PH[p].c);
+  document.querySelectorAll(".tab-btn:not(.active)").forEach(b=>{b.style.background="";b.style.color="";});
+  render();
+}
+render();
+if("serviceWorker" in navigator && location.protocol.startsWith("http")){
+  window.addEventListener("load",function(){navigator.serviceWorker.register("service-worker.js").catch(function(){});});
+}
+</script>
+</body>
+</html>
