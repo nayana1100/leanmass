@@ -43,10 +43,10 @@ body{font-family:'Apple SD Gothic Neo',system-ui,sans-serif;background:#F1F5F9;c
 .ex-row{padding:10px 0;border-bottom:1px solid #F1F5F9}
 .ex-row:last-child{border-bottom:none}
 .ex-top{display:flex;justify-content:space-between;align-items:center}
-.ex-name{font-size:13.5px;font-weight:700;display:flex;align-items:center;gap:6px}
+.ex-name{font-size:14px;font-weight:700;display:flex;align-items:center;gap:6px}
 .mtag{font-size:9px;font-weight:900;padding:2px 6px;border-radius:5px;color:white}
-.ex-det{font-size:12.5px;font-weight:700;font-family:monospace;text-align:right;max-width:48%}
-.ex-method{font-size:11px;color:#64748B;margin-top:4px;line-height:1.45;font-weight:500}
+.ex-presc{font-size:13.5px;font-weight:800;margin-top:6px;margin-left:2px;line-height:1.4}
+.ex-method{font-size:11.5px;color:#64748B;margin-top:3px;line-height:1.45;font-weight:500}
 .ex-log{display:flex;gap:5px;margin-top:8px;align-items:center}
 .ex-log input{width:100%;border:1.5px solid #E2E8F0;border-radius:8px;padding:6px 4px;font-size:12px;text-align:center;font-family:inherit;min-width:0}
 .ex-log input:focus{outline:none;border-color:#3B82F6}
@@ -317,39 +317,39 @@ const DR=[
 ];
 const WK={
 "Push A":[
-  ["벤치프레스","M","탑세트1(RIR2)+백오프2(RIR3)","탑6@72.5+백8@65×2","탑6@75+백8@67.5×2","탑5@77.5+백6@70×3","탑8@65+백10@57.5×2"],
-  ["인클라인 덤벨프레스","C","스트레이트 RIR1~2","3×10 · 22kg","4×10 · 24kg","4×8 · 26kg","3×10 · 20kg"],
-  ["케이블 플라이","I","스트레이트, 마지막 드랍 옵션","3×12 RIR1","3×12 RIR1","4×12 RIR0~1","3×12 RIR1"],
-  ["오버헤드프레스","M","탑세트1(RIR2)+백오프2(RIR3)","탑6@45+백8@40×2","탑6@47.5+백8@42.5×2","탑5@50+백6@45×2","탑8@40+백10@35×2"],
-  ["사이드 레터럴레이즈","I","스트레이트 RIR0~1, 드랍 권장","3×15 · 10kg","4×15 · 12kg","4×15 · 14kg","3×15 · 10kg"],
+  ["벤치프레스","M","탑세트+백오프 · RIR 2~3 · 실패하지 않기","탑세트 72.5kg 6회 → 백오프 65kg 8회 · 총 3세트","탑세트 75kg 6회 → 백오프 67.5kg 8회 · 총 3세트","탑세트 77.5kg 5회 → 백오프 70kg 6회 · 총 4세트","탑세트 65kg 8회 → 백오프 57.5kg 10회 · 총 3세트"],
+  ["인클라인 덤벨프레스","C","일반 세트 · RIR 1~2","22kg 10회 · 총 3세트","24kg 10회 · 총 4세트","26kg 8회 · 총 4세트","20kg 10회 · 총 3세트"],
+  ["케이블 플라이","I","일반 세트 · RIR 1 · 마지막 세트 드랍 가능","12회 · 총 3세트","12회 · 총 3세트","12회 · 총 4세트","12회 · 총 3세트"],
+  ["오버헤드프레스","M","탑세트+백오프 · RIR 2~3 · 실패하지 않기","탑세트 45kg 6회 → 백오프 40kg 8회 · 총 3세트","탑세트 47.5kg 6회 → 백오프 42.5kg 8회 · 총 3세트","탑세트 50kg 5회 → 백오프 45kg 6회 · 총 3세트","탑세트 40kg 8회 → 백오프 35kg 10회 · 총 3세트"],
+  ["사이드 레터럴레이즈","I","일반 세트 · RIR 0~1 · 드랍 권장","10kg 15회 · 총 3세트","12kg 15회 · 총 4세트","14kg 15회 · 총 4세트","10kg 15회 · 총 3세트"],
 ],
 "Pull A":[
-  ["데드리프트","M","탑세트1(RIR3~4), 백오프 X","4×5 · 100kg","4×5 · 105kg","4×5 · 110kg","3×5 · 90kg"],
-  ["랫풀다운","C","스트레이트 RIR1~2","3×10 · 70kg","4×10 · 75kg","4×10 · 80kg","3×10 · 65kg"],
-  ["바벨로우","C","스트레이트 RIR1~2","3×8 · 70kg","4×8 · 72.5kg","4×8 · 75kg","3×8 · 65kg"],
-  ["페이스풀","I","스트레이트 RIR0~1","3×15","3×15","4×15","3×15"],
-  ["바벨컬","I","스트레이트, 마지막 드랍 옵션","3×10 · 40kg","3×10 · 42.5kg","4×10 · 45kg","3×10 · 37.5kg"],
+  ["데드리프트","M","무거운 세트 · RIR 3~4 · 실패하지 않기","100kg 5회 · 총 4세트","105kg 5회 · 총 4세트","110kg 5회 · 총 5세트","90kg 5회 · 총 3세트"],
+  ["랫풀다운","C","일반 세트 · RIR 1~2","70kg 10회 · 총 3세트","75kg 10회 · 총 4세트","80kg 10회 · 총 4세트","65kg 10회 · 총 3세트"],
+  ["바벨로우","C","일반 세트 · RIR 1~2","70kg 8회 · 총 3세트","72.5kg 8회 · 총 4세트","75kg 8회 · 총 4세트","65kg 8회 · 총 3세트"],
+  ["페이스풀","I","일반 세트 · RIR 0~1","15회 · 총 3세트","15회 · 총 3세트","15회 · 총 4세트","15회 · 총 3세트"],
+  ["바벨컬","I","일반 세트 · 마지막 세트 드랍 가능","40kg 10회 · 총 3세트","42.5kg 10회 · 총 3세트","45kg 10회 · 총 4세트","37.5kg 10회 · 총 3세트"],
 ],
 "Legs":[
-  ["스쿼트","M","탑세트1(RIR2)+백오프2(RIR3)","탑6@85+백10@70×2","탑6@90+백10@75×2","탑5@95+백8@80×2","탑8@75+백10@62.5×2"],
-  ["루마니안 데드리프트","C","스트레이트 RIR2","3×10 · 70kg","3×10 · 75kg","4×10 · 80kg","3×10 · 65kg"],
-  ["레그프레스","C","스트레이트 RIR1~2","3×12","4×12","4×10","3×12"],
-  ["레그컬","I","스트레이트, 마지막 드랍 옵션","3×12 RIR0~1","4×12 RIR0~1","4×12 RIR0~1","3×12"],
-  ["카프레이즈","I","스트레이트 RIR0~1","4×15","4×15","4×20","3×15"],
+  ["스쿼트","M","탑세트+백오프 · RIR 2~3 · 실패하지 않기","탑세트 85kg 6회 → 백오프 70kg 10회 · 총 3세트","탑세트 90kg 6회 → 백오프 75kg 10회 · 총 3세트","탑세트 95kg 5회 → 백오프 80kg 8회 · 총 3세트","탑세트 75kg 8회 → 백오프 62.5kg 10회 · 총 3세트"],
+  ["루마니안 데드리프트","C","일반 세트 · RIR 2","70kg 10회 · 총 3세트","75kg 10회 · 총 3세트","80kg 10회 · 총 4세트","65kg 10회 · 총 3세트"],
+  ["레그프레스","C","일반 세트 · RIR 1~2","12회 · 총 3세트","12회 · 총 4세트","10회 · 총 4세트","12회 · 총 3세트"],
+  ["레그컬","I","일반 세트 · RIR 0~1 · 마지막 드랍 가능","12회 · 총 3세트","12회 · 총 4세트","12회 · 총 4세트","12회 · 총 3세트"],
+  ["카프레이즈","I","일반 세트 · RIR 0~1","15회 · 총 4세트","15회 · 총 4세트","20회 · 총 4세트","15회 · 총 3세트"],
 ],
 "Push B":[
-  ["오버헤드프레스","M","탑세트1(RIR2)+백오프2(RIR3)","탑6@45+백8@40×2","탑6@47.5+백8@42.5×2","탑5@50+백6@45×2","탑8@40+백10@35×2"],
-  ["덤벨 숄더프레스","C","스트레이트 RIR1~2","3×10 · 20kg","3×10 · 22kg","4×10 · 24kg","3×10 · 18kg"],
-  ["인클라인 벤치프레스","C","스트레이트 RIR1~2","3×10 · 65kg","4×10 · 67.5kg","4×8 · 70kg","3×10 · 60kg"],
-  ["사이드 레터럴레이즈","I","스트레이트 RIR0~1, 드랍 권장","4×15 · 12kg","4×15 · 12kg","4×15 · 14kg","3×15 · 10kg"],
-  ["트라이셉스 푸시다운","I","스트레이트, 마지막 드랍 옵션","3×12 RIR0~1","4×12 RIR0~1","4×12 RIR0~1","3×12"],
+  ["오버헤드프레스","M","탑세트+백오프 · RIR 2~3 · 실패하지 않기","탑세트 45kg 6회 → 백오프 40kg 8회 · 총 3세트","탑세트 47.5kg 6회 → 백오프 42.5kg 8회 · 총 3세트","탑세트 50kg 5회 → 백오프 45kg 6회 · 총 3세트","탑세트 40kg 8회 → 백오프 35kg 10회 · 총 3세트"],
+  ["덤벨 숄더프레스","C","일반 세트 · RIR 1~2","20kg 10회 · 총 3세트","22kg 10회 · 총 3세트","24kg 10회 · 총 4세트","18kg 10회 · 총 3세트"],
+  ["인클라인 벤치프레스","C","일반 세트 · RIR 1~2","65kg 10회 · 총 3세트","67.5kg 10회 · 총 4세트","70kg 8회 · 총 4세트","60kg 10회 · 총 3세트"],
+  ["사이드 레터럴레이즈","I","일반 세트 · RIR 0~1 · 드랍 권장","12kg 15회 · 총 4세트","12kg 15회 · 총 4세트","14kg 15회 · 총 4세트","10kg 15회 · 총 3세트"],
+  ["트라이셉스 푸시다운","I","일반 세트 · RIR 0~1 · 마지막 드랍 가능","12회 · 총 3세트","12회 · 총 4세트","12회 · 총 4세트","12회 · 총 3세트"],
 ],
 "Pull B":[
-  ["바벨로우","M","탑세트1(RIR2)+백오프2(RIR3)","탑8@70+백10@60×2","탑8@72.5+백10@62.5×2","탑6@75+백8@65×2","탑8@65+백10@55×2"],
-  ["시티드 케이블로우","C","스트레이트 RIR1~2","3×12","4×12","4×10","3×12"],
-  ["원암 덤벨로우","C","스트레이트 RIR1~2","3×10 · 30kg","3×10 · 32kg","4×10 · 34kg","3×10 · 28kg"],
-  ["해머컬","I","스트레이트, 마지막 드랍 옵션","3×12 · 16kg","3×12 · 18kg","4×12 · 20kg","3×12 · 16kg"],
-  ["리어델트 플라이","I","스트레이트 RIR0~1","3×15","4×15","4×15","3×15"],
+  ["바벨로우","M","탑세트+백오프 · RIR 2~3 · 실패하지 않기","탑세트 70kg 8회 → 백오프 60kg 10회 · 총 3세트","탑세트 72.5kg 8회 → 백오프 62.5kg 10회 · 총 3세트","탑세트 75kg 6회 → 백오프 65kg 8회 · 총 3세트","탑세트 65kg 8회 → 백오프 55kg 10회 · 총 3세트"],
+  ["시티드 케이블로우","C","일반 세트 · RIR 1~2","12회 · 총 3세트","12회 · 총 4세트","10회 · 총 4세트","12회 · 총 3세트"],
+  ["원암 덤벨로우","C","일반 세트 · RIR 1~2","30kg 10회 · 총 3세트","32kg 10회 · 총 3세트","34kg 10회 · 총 4세트","28kg 10회 · 총 3세트"],
+  ["해머컬","I","일반 세트 · 마지막 드랍 가능","16kg 12회 · 총 3세트","18kg 12회 · 총 3세트","20kg 12회 · 총 4세트","16kg 12회 · 총 3세트"],
+  ["리어델트 플라이","I","일반 세트 · RIR 0~1","15회 · 총 3세트","15회 · 총 4세트","15회 · 총 4세트","15회 · 총 3세트"],
 ],
 };
 const TAGC={"M":"#DC2626","C":"#2563EB","I":"#059669"};
@@ -413,15 +413,13 @@ function renderToday(dt,ph,p,d,w,dl){
     document.getElementById("exList").innerHTML=WK[dt[0]].map((e,idx)=>{
       const type=e[1],method=e[2];
       let val=e[p+3],meth=method;
-      if(dl){val=(type==="I")?"2세트 · 드랍 생략":"2세트 · 90% 중량";meth="디로드: RIR 3~4, 여유롭게";}
+      if(dl){val=(type==="I")?"가벼운 무게 · 총 2세트 (드랍 생략)":"평소의 90% 무게 · 총 2세트";meth="디로드: RIR 3~4 여유롭게";}
       const key=`log_${d}_${idx}`,saved=lsGet(key)||{};
       const done=saved.w||saved.r;
       return `<div class="ex-row">
-        <div class="ex-top">
-          <span class="ex-name"><span class="mtag" style="background:${TAGC[type]}">${type}</span>${e[0]}</span>
-          <span class="ex-det" style="color:${ph.c}">${val}</span>
-        </div>
-        <div class="ex-method">↳ ${meth}</div>
+        <div class="ex-name"><span class="mtag" style="background:${TAGC[type]}">${type}</span>${e[0]}</div>
+        <div class="ex-presc" style="color:${ph.c}">${val}</div>
+        <div class="ex-method">${meth}</div>
         <div class="ex-log">
           <input type="number" placeholder="kg" value="${saved.w||''}" onchange="saveLog(${d},${idx},'w',this.value)">
           <input type="number" placeholder="회" value="${saved.r||''}" onchange="saveLog(${d},${idx},'r',this.value)">
@@ -531,8 +529,8 @@ const MUSCLE={
 };
 function plannedSets(type,val,dl){
   if(dl) return 2;
-  if(val.includes("탑")){const m=val.match(/×(\d+)/);return 1+(m?parseInt(m[1]):2);}
-  const m=val.match(/(\d+)×/);return m?parseInt(m[1]):3;
+  const m=val.match(/총\s*(\d+)세트/);
+  return m?parseInt(m[1]):3;
 }
 function renderVolume(w,ph){
   const dl=isDeload(w);
